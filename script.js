@@ -191,7 +191,7 @@ function connectToDevice() {
             onDisconnected
         );
 
-        bleState.textContent = 'Connecting...';
+        bleState.textContent = '接続中。。。';
         return device.gatt.connect();
     })
     .then(server => {
@@ -241,7 +241,7 @@ function connectToDevice() {
         })
     })
     .then(() => {
-        bleState.textContent = 'Connected to GripTester-ESP32';
+        bleState.textContent = 'GripTester-ESP32に接続済み';
 
         if(bleDot) bleDot.classList.add('connected');
         connectButton.classList.add('hidden');
@@ -251,7 +251,7 @@ function connectToDevice() {
     })
     .catch(error => {
         console.error('BLE connection error:', error);
-        bleState.textContent = 'Connection failed';
+        bleState.textContent = '接続に失敗しました。';
     });
 }
 
@@ -263,7 +263,7 @@ function disconnectDevice() {
 }
 
 function onDisconnected() {
-    bleState.textContent = 'Disconnected';
+    bleState.textContent = '切断';
 
     if(bleDot) bleDot.classList.remove('connected');
     connectButton.classList.remove('hidden');
