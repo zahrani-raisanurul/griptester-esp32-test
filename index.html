@@ -1,0 +1,69 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+    <title>グリップテスターテストウェブサイト</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta charset="UTF-8">
+    <link rel="stylesheet" href="style.css">
+    <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.1/dist/chart.umd.min.js"></script>
+</head>
+<body>
+    <div class="topnav">
+        <h1>グリップテスター計測「テスト」</h1>
+    </div>
+
+    <div class="content">
+        <div class="connection-card">
+            <button id="connectButton" class="connect-button">&#x1F4F6;&nbsp; BLEデバイスを接続</button>
+            <button id="disconnectButton" class="disconnect-button hidden">&#x274C;&nbsp; 切断</button>
+            <div class="ble-status">
+                <span id="bleDot" class="ble-dot"></span>
+                <span id="bleState">切断済み</span>
+            </div>
+        </div>
+
+        <div class="sensor-grid">
+
+            <div class="sensor-card dist">
+                <div class="sensor-label">距離</div>
+                <div class="sensor-value">
+                    <span id="distValue">--</span><span class="sensor-unit">&nbsp;m</span>
+                </div>
+            </div>
+
+            <div class="sensor-card hforce">
+                <div class="sensor-label">水平荷重</div>
+                <div class="sensor-value">
+                    <span id="hForceValue">--</span><span class="sensor-unit">&nbsp;N</span>
+                </div>
+            </div>
+
+            <div class="sensor-card vforce">
+                <div class="sensor-label">垂直荷重</div>
+                <div class="sensor-value">
+                    <span id="vForceValue">--</span><span class="sensor-unit">&nbsp;N</span>
+                </div>
+            </div>
+
+            <div class="sensor-card skidres">
+                <div class="sensor-label">摩擦係数 (µ)</div>
+                <div class="sensor-value">
+                    <span id="skidResValue">--</span>
+                </div>
+            </div>
+        </div>
+
+        <div class="chart-section">
+            <div class="chart-card">
+                <div class="chart-card-header">
+                    <h2>摩擦係数のグラフ</h2>
+                </div>
+                <div class="chart-wrapper">
+                    <canvas id="skidResChart" role="img"></canvas>
+                </div>
+            </div>
+        </div>
+    </div>
+    <script src="script.js"></script>
+</body>
+</html>
