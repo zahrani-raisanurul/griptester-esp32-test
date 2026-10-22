@@ -33,7 +33,7 @@ var skidChart = new Chart(document.getElementById('skidResChart'), {
     type: 'line',
     data: {
         datasets: [{
-            label: 'Skid Resistance',
+            label: '摩擦係数',
             data: [],
             borderColor: '#a135ff',
             backgroundColor: '#a135ff' + '18',
@@ -209,7 +209,7 @@ function connectToDevice() {
             service.getCharacteristic(resetCharUUID)
         ]);
     })
-    .then(characteristics => {
+    .then(async characteristics => {
         hForceCharFound = characteristics[0];
         vForceCharFound = characteristics[1];
         distCharFound = characteristics[2];
@@ -229,16 +229,33 @@ function connectToDevice() {
             'characteristicvaluechanged', onSkidResChange
         );
         
-        return resetCharFound.writeValueWithResponse(
+        // return resetCharFound.writeValueWithResponse(
+        //     new TextEncoder().encode('RESET')
+        // ).then(() => {
+        //     return Promise.all([
+        //     hForceCharFound.startNotifications(),
+        //     vForceCharFound.startNotifications(),
+        //     distCharFound.startNotifications(),
+        //     skidResCharFound.startNotifications()
+        //     ]);
+        // })
+
+        await resetCharFound.writeValueWithResponse(
             new TextEncoder().encode('RESET')
-        ).then(() => {
-            return Promise.all([
-            hForceCharFound.startNotifications(),
-            vForceCharFound.startNotifications(),
-            distCharFound.startNotifications(),
-            skidResCharFound.startNotifications()
-            ]);
-        })
+        );
+
+        const notifications = [
+            ['Horizontal force', hForceCharFound],
+            ['Vertical force', vForceCharFound],
+            ['Distance', distCharFound],
+            ['Mu', skidResCharFound]
+        ];
+
+        for (const [name, characteristic] of notifications) {
+            console.log(`Starting ${name} of notifications...`);
+            await characteristic.startNotifications();
+            console.log(`${name} notifications started successfully.`);
+        }
     })
     .then(() => {
         bleState.textContent = 'GripTester-ESP32に接続済み';
@@ -252,6 +269,22 @@ function connectToDevice() {
     .catch(error => {
         console.error('BLE connection error:', error);
         bleState.textContent = '接続に失敗しました。';
+
+        if(bleServer && bleServer.connected) {
+            bleServer.disconnect();
+        }
+
+        bleServer = null;
+        bleServiceFound = null;
+        hForceCharFound = null;
+        vForceCharFound = null;
+        distCharFound = null;
+        skidResCharFound = null;
+        resetCharFound = null;
+
+        if(bleDot) bleDot.classList.remove('connected');
+        connectButton.classList.remove('hidden');
+        disconnectButton.classList.add('hidden');
     });
 }
 
